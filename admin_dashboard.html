@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #f8f9fa;
+            font-family: Arial, sans-serif;
+        }
+        .container {
+            margin-top: 30px;
+        }
+        h1, h2 {
+            color: #343a40;
+            font-weight: bold;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        .btn-primary {
+            background-color: #007bff;
+            border-color: #007bff;
+        }
+        .btn-primary:hover {
+            background-color: #0056b3;
+            border-color: #004085;
+        }
+        .btn-danger {
+            background-color: #dc3545;
+            border-color: #dc3545;
+        }
+        .btn-danger:hover {
+            background-color: #c82333;
+            border-color: #bd2130;
+        }
+        .product-card {
+            border: 1px solid #ddd;
+            padding: 15px;
+            border-radius: 10px;
+            background-color: #fff;
+            transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        .product-card:hover {
+            transform: scale(1.02);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+        }
+        .product-card img {
+            max-width: 150px;
+            height: auto;
+            border-radius: 5px;
+        }
+        .product-title {
+            font-size: 1.25rem;
+            font-weight: bold;
+            color: #007bff;
+        }
+        .price {
+            font-size: 1.1rem;
+            color: #28a745;
+        }
+        .product-info p {
+            margin-bottom: 5px;
+        }
+        .form-control {
+            border-radius: 0.25rem;
+        }
+        .form-control:focus {
+            border-color: #007bff;
+            box-shadow: none;
+        }
+        .alert {
+            margin-top: 20px;
+        }
+        .delete-item-list {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Admin Dashboard</h1>
+
+        <!-- Add New Item Section -->
+        <div class="mb-4">
+            <h2>Add New Item</h2>
+            <form id="addItemForm" enctype="multipart/form-data">
+                <div class="form-group">
+                    <label for="title">Title:</label>
+                    <input type="text" id="title" name="title" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label for="description">Description:</label>
+                    <textarea id="description" name="description" class="form-control"></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="price">Price:</label>
+                    <input type="number" id="price" name="price" class="form-control" step="0.01" required>
+                </div>
+                <div class="form-group">
+                    <label for="image">Image:</label>
+                    <input type="file" id="image" name="image" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label for="category">Category:</label>
+                    <input type="text" id="category" name="category" class="form-control" required>
+                </div>
+                <button type="submit" class="btn btn-primary">Add Item</button>
+            </form>
+        </div>
+        
+        <!-- Manage Items Section -->
+        <div class="mb-4">
+            <h2>Manage Items</h2>
+            <ul id="productList" class="list-unstyled">
+                <!-- Dynamic product list will be populated here -->
+            </ul>
+        </div>
+
+        <!-- Delete Existing Item Section -->
+        <div class="delete-item-list">
+            <h2>Delete Existing Item</h2>
+            <form id="deleteItemForm">
+                <div class="form-group">
+                    <label for="deleteItem">Select Item to Delete:</label>
+                    <select id="deleteItem" name="deleteItem" class="form-control" required>
+                        <!-- Options will be populated dynamically -->
+                    </select>
+                </div>
+                <a href="menu-items.html">Logout</a>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // Function to fetch and display menu items
+        function loadMenuItems() {
+            fetch('/get_menu_items')
+                .then(response => response.json())
+                .then(items => {
+                    const productList = document.getElementById('productList');
+                    const deleteItemSelect = document.getElementById('deleteItem');
+                    productList.innerHTML = ''; // Clear existing items
+                    deleteItemSelect.innerHTML = '<option value="">Select an item to delete</option>'; // Clear existing options
+
+                    if (items.length === 0) {
+                        productList.innerHTML = '<p>No items available.</p>';
+                        return;
+                    }
+
+                    items.forEach(item => {
+                        const productItem = document.createElement('li');
+                        productItem.innerHTML = `
+                            <div class="product-card mb-3">
+                                <div class="product-title">${item.title}</div>
+                                <img src="${item.imagePath}" alt="${item.title}">
+                                <div class="product-info mt-2">
+                                    <p>${item.description}</p>
+                                    <p class="price">R${item.price.toFixed(2)}</p>
+                                    <button onclick="deleteItem(${item.id})" class="btn btn-danger">Delete</button>
+                                </div>
+                            </div>
+                        `;
+                        productList.appendChild(productItem);
+
+                        const option = document.createElement('option');
+                        option.value = item.id;
+                        option.textContent = item.title;
+                        deleteItemSelect.appendChild(option);
+                    });
+                }).catch(error => {
+                    console.error('Error fetching menu items:', error);
+                });
+        }
+
+        // Function to handle item addition
+        document.getElementById('addItemForm').addEventListener('submit', function(event) {
+            event.preventDefault(); // Prevent the default form submission
+
+            // Collect form data
+            const formData = new FormData(this);
+
+            // Send the data to the servlet
+            fetch('/AddProductServlet', {
+                method: 'POST',
+                body: formData
+            }).then(response => response.json())
+              .then(data => {
+                  if (data.status === 'success') {
+                      // Reload the list of products
+                      loadMenuItems(); 
+                      alert('Item added successfully!');
+                  } else {
+                      alert('Failed to add item: ' + data.message);
+                  }
+              }).catch(error => {
+                  console.error('Error adding item:', error);
+                  alert('Failed to add item');
+              });
+        });
+
+        // Function to handle item deletion by form submission
+        document.getElementById('deleteItemForm').addEventListener('submit', function(event) {
+            event.preventDefault(); // Prevent the default form submission
+
+            // Collect form data
+            const itemId = document.getElementById('deleteItem').value;
+
+            if (itemId) {
+                // Send the data to the servlet
+                fetch('/DeleteProductServlet', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ productId: itemId })
+                }).then(response => {
+                    if (response.ok) {
+                        loadMenuItems(); // Reload items after deletion
+                        alert('Item deleted successfully!');
+                    } else {
+                        alert('Failed to delete item');
+                    }
+                }).catch(error => {
+                    console.error('Error deleting item:', error);
+                    alert('Failed to delete item');
+                });
+            } else {
+                alert('Please select an item to delete.');
+            }
+        });
+
+        // Function to delete an item directly from the list
+        function deleteItem(id) {
+            if (confirm('Are you sure you want to delete this item?')) {
+                fetch('/DeleteProductServlet', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ productId: id })
+                }).then(response => {
+                    if (response.ok) {
+                        loadMenuItems(); // Reload items after deletion
+                        alert('Item deleted successfully!');
+                    } else {
+                        alert('Failed to delete item');
+                    }
+                }).catch(error => {
+                    console.error('Error deleting item:', error);
+                    alert('Failed to delete item');
+                });
+            }
+        }
+
+        // Initial load of menu items
+        loadMenuItems();
+    </script>
+</body>
+</html>

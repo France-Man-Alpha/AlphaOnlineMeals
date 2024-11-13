@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AlphaMeals</title>
+    <style>
+        /* Import and Reset */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            color: #fff;
+        }
+
+       
+        /* Title "Categories" */
+        .categories-title {
+            position: absolute;
+            top: 5px;
+            left: 50%;
+            transform: translateX(-50%);
+            color: black;
+            font-family: "Montserrat", sans-serif;
+            font-size: 36px;
+            font-weight: bold;
+            z-index: 1;
+        }
+
+        /* Transparent Box */
+        .header {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+            color: white;
+            font-family: "Montserrat", sans-serif;
+            z-index: 1;
+            padding: 30px;
+            border-radius: 18px;
+            background: rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 900px;
+            animation: slideIn 1.5s ease-out;
+        }
+
+        .header h1 {
+            font-weight: 300;
+            font-size: 46px;
+            margin-bottom: 30px;
+        }
+
+        .header p {
+            font-weight: 300;
+            font-size: 20px;
+            line-height: 1.6;
+            color: #f8f9fa;
+            font-family: "Open Sans", sans-serif;
+            margin-top: 20px;
+            letter-spacing: 0.5px;
+        }
+
+        /* Flexbox for categories */
+        .categories {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+        }
+
+        .category-box {
+            flex: 1;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 20px;
+            margin: 0 10px;
+            border-radius: 10px;
+            transition: transform 0.3s;
+        }
+
+        .category-box:hover {
+            transform: scale(1.05); /* Hover effect for categories */
+        }
+
+        .category-box h2 {
+            font-size: 24px;
+            margin-bottom: 20px;
+        }
+
+        /* Image styling */
+        .category-box img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            border-radius: 10px;
+            margin-bottom: 10px;
+        }
+        /* Description styling */
+        .category-box p {
+            font-size: 16px;
+            line-height: 1.5;
+            color: #f8f9fa;
+            margin-top: 10px;
+        }
+         /* Background Image */
+        body {
+            margin: 0;
+            padding: 0;
+            height: 100vh; /* Ensure full viewport height */
+            overflow: hidden; /* Prevent scrollbars if image is slightly larger */
+            background: url('https://mir-s3-cdn-cf.behance.net/project_modules/max_1200/35d178100666679.5f0ddf01b529d.gif') no-repeat center center fixed;
+            background-size: cover; /* Adjust to cover the whole page while preserving aspect ratio */
+            background-attachment: fixed; /* Keep the background fixed when scrolling */
+        }
+        /* Button styles */
+        .button {
+            display: inline-block;
+            border-radius: 5px;
+            background-color: #32CD32;
+            border: none;
+            color: white;
+            text-align: center;
+            font-size: 18px;
+            padding: 10px;
+            width: 120px;
+            transition: all 0.5s;
+            cursor: pointer;
+            margin-top: 20px;
+        }
+
+        .button span {
+            display: inline-block;
+            position: relative;
+            transition: 0.5s;
+        }
+
+        .button:hover span {
+            padding-right: 15px;
+        }
+
+        .button span:after {
+            content: '\00bb';
+            position: absolute;
+            opacity: 0;
+            top: 0;
+            right: -15px;
+            transition: opacity 0.5s, right 0.5s;
+        }
+
+        .button:hover span:after {
+            opacity: 1;
+            right: 0;
+        }
+
+        /* Top Buttons */
+        .top-buttons {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            display: flex;
+            gap: 10px; /* Space between buttons */
+        }
+
+        .top-buttons a {
+            background-color: #ff6347;
+            color: white;
+            text-align: center;
+            font-size: 16px;
+            padding: 10px 20px;
+            border-radius: 5px;
+            text-decoration: none;
+        }
+
+        .top-buttons a:hover {
+            background-color: #ff4500;
+        }
+
+        @keyframes slideIn {
+            0% {
+                opacity: 0;
+                transform: translate(-50%, -60%);
+            }
+            100% {
+                opacity: 1;
+                transform: translate(-50%, -50%);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="bg">
+        <!-- Top Buttons -->
+        <div class="top-buttons">
+            <a href="mycart.html">MyCart</a>
+            <a href="home.jsp">Home</a>
+            <a href="logout.jsp">Logout</a>
+        </div>
+
+        
+
+        <div class="header">
+            <h1>All That You Crave Is Here!</h1>
+
+            <!-- Categories Section -->
+            <div class="categories">
+                <div class="category-box">
+                    <h2>Kotas</h2>
+                    <img src="kotas.jpeg" alt="Kota">
+                    <p>Discover the taste of our juicy and mouth-watering Kotas! 
+                        Perfect for any meal of the day!</p>
+                    <a href="kotas.html" class="button"><span>View</span></a>
+                </div>
+                <div class="category-box">
+                    <h2>Burgers</h2>
+                    <img src="buger1.jpeg" alt="Burgers">
+                    <p>Sink your teeth into our gourmet burgers, 
+                        juicy patties, and delectable sauces.</p>
+                    <a href="burgers.html" class="button"><span>View</span></a>
+                </div>
+                <div class="category-box">
+                    <h2>African Dines</h2>
+                    <img src="african.jpeg" alt="African Dines">
+                     <p>Experience the vibrant and exotic flavors of Africa with our specially crafted dishes. 
+                         traditional recipes and 
+                         authentic ingredients.</p>
+                    <a href="african.html" class="button"><span>View</span></a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <canvas id="canvas"></canvas>
+</body>
+</html>
